@@ -22,11 +22,14 @@ const router = new VueRouter({
 // checked user auth
 router.beforeEach((to, from, next) => {
   if (to.matched.some(x => x.meta.requiresAuth)) {
-    if (firebase.auth().currentUser) {
-      next()
-      return
-    }
-    next({ path: '/signin', query: { redirect: to.fullPath } })
+    const cancel = firebase.auth().onAuthStateChanged(user => {
+      cancel()
+      if (user) {
+        next()
+        return
+      }
+      next({ path: '/signin', query: { redirect: to.fullPath } })
+    })
     return
   }
   next()
