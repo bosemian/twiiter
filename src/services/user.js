@@ -19,8 +19,22 @@ const subscribe = (id, cb) => {
     })
 }
 
+const list = (cb) => {
+  firebase.database().ref('user')
+    .on('value', (snapshots) => {
+      const result = []
+      snapshots.forEach((snapshot) => {
+        const user = snapshot.val()
+        user.$id = snapshot.key
+        result.push(user)
+      })
+      cb(result)
+    })
+}
+
 export default {
   get,
   set,
-  subscribe
+  subscribe,
+  list
 }

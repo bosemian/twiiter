@@ -8,7 +8,7 @@ const list = (cb) => {
       snapshots.forEach((snapshot) => {
         result.push(snapshot.val())
       })
-      cb(result)
+      cb(result.reverse())
     })
 }
 
