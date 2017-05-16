@@ -12,7 +12,8 @@
 
 <script>
 import ProfileForm from './ProfileForm'
-import firebase from 'firebase'
+import { Me } from '../services'
+
 export default {
   components: {
     ProfileForm
@@ -24,17 +25,13 @@ export default {
     }
   }),
   created () {
-    const userId = firebase.auth().currentUser.uid
-    firebase.database().ref(`user/${userId}`)
-        .once('value', snapshot => {
-          this.profile = snapshot.val()
-        })
+    Me.get((data) => {
+      this.profile = data
+    })
   },
   methods: {
     saveForm () {
-      const userId = firebase.auth().currentUser.uid
-      firebase.database().ref(`user/${userId}`)
-        .set(this.profile)
+      Me.set(this.profile)
         .then(() => {
           this.back()
         })
