@@ -1,8 +1,7 @@
 <template>
   <div class="ui segment">
     <h3 class="ui header">Profile</h3>
-    <h4>Name:</h4> {{ profile.name }}<br>
-    <h4>Description:</h4> {{ profile.description }}
+    <profile-detail :profile="profile"></profile-detail>
     <br><br>
     <router-link to="/profile/edit"class="ui button green">Edit</router-link>
   </div>
@@ -10,8 +9,12 @@
 
 <script>
 import { Me } from '../services'
+import ProfileDetail from './ProfileDetail'
 
 export default {
+  components: {
+    ProfileDetail
+  },
   data: () => ({
     profile: {
       name: '',
@@ -19,9 +22,10 @@ export default {
     }
   }),
   created () {
-    Me.get((data) => {
-      this.profile = data
-    })
+    Me.get()
+      .then((data) => {
+        this.profile = data
+      })
   }
 }
 </script>

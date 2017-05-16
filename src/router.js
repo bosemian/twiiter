@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import firebase from 'firebase'
+import { Auth } from './services'
 
 import Home from '@/components/Home'
 import Profile from '@/components/Profile'
@@ -24,14 +24,12 @@ const router = new VueRouter({
 // checked user auth
 router.beforeEach((to, from, next) => {
   if (to.matched.some(x => x.meta.requiresAuth)) {
-    const cancel = firebase.auth().onAuthStateChanged(user => {
-      cancel()
-      if (user) {
+    Auth.requireUser()
+      .then(() => {
         next()
-        return
-      }
-      next({ path: '/signin', query: { redirect: to.fullPath } })
-    })
+      }, () => {
+        next({ path: '/signin', query: { redirect: to.fullPath } })
+      })
     return
   }
   next()

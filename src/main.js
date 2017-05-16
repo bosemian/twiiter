@@ -18,6 +18,13 @@ firebase.initializeApp({
   messagingSenderId: '567003771596'
 })
 
+Vue.filter('upper', (value) => {
+  if (typeof value === 'string') {
+    return value.toUpperCase()
+  }
+  return value
+})
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

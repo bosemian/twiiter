@@ -21,14 +21,10 @@ export default {
     description: ''
   }),
   created () {
-    this.name = this.value.name
-    this.description = this.value.description
+    this.reload()
   },
   watch: {
-    value () {
-      this.name = this.value.name
-      this.description = this.value.description
-    }
+    value: 'reload'
   },
   methods: {
     save () {
@@ -37,6 +33,10 @@ export default {
         description: this.description
       })
       this.$emit('save')
+    },
+    reload () {
+      this.name = this.value.name
+      this.description = this.value.description
     }
   }
 }

@@ -6,7 +6,6 @@
       @cancel="back"
       v-model="profile">
     </profile-form>
-    {{ profile }}
   </div>
 </template>
 
@@ -25,9 +24,10 @@ export default {
     }
   }),
   created () {
-    Me.get((data) => {
-      this.profile = data
-    })
+    Me.get()
+        .then((data) => {
+          this.profile = data
+        })
   },
   methods: {
     saveForm () {
