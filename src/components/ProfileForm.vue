@@ -9,7 +9,7 @@
       <input v-model="description">
     </div>
     <button class="ui submit button blue">Save</button>
-    <div class="ui button red">Cancel</div>
+    <div class="ui button red" @click="$emit('cancel')">Cancel</div>
   </form>
 </template>
 
@@ -23,6 +23,12 @@ export default {
   created () {
     this.name = this.value.name
     this.description = this.value.description
+  },
+  watch: {
+    value () {
+      this.name = this.value.name
+      this.description = this.value.description
+    }
   },
   methods: {
     save () {
