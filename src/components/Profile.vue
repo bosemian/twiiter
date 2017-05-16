@@ -29,3 +29,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  img.circular.image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 5px;
+  }
+</style>
