@@ -8,13 +8,28 @@
         <button class="ui blue button" :class="{'loading disabled': posting}">Post</button>
       </form>
     </div>
-    <div v-for="tweet in tweets" class="ui segment">
-      <img :src="findUserPhoto(tweet.owner)"
-        alt="avatar"
-        v-if="findUserPhoto(tweet.owner)"
-        class="ui circular image">
-      {{ findUserName(tweet.owner) }}<br>
-      {{ tweet.content }} ({{ tweet.timestamp  | fromNow}})
+    <div v-for="tweet in list" class="ui segment">
+      <div class="ui itemS">
+        <div class="item">
+          <div class="image">
+            <img :src="tweet.user.photo"
+                alt="avatar"
+                v-if="tweet.user"
+                class="ui tiny circular image">
+          </div>
+          <div class="content">
+            <div v-if="tweet.user" class="head">
+              {{ tweet.user.name }}
+            </div>
+            <div class="description">
+              {{ tweet.content }}
+            </div>
+            <div class="date">
+              {{ tweet.timestamp  | fromNow }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -27,15 +42,30 @@ export default {
     input: '',
     posting: false,
     tweets: [],
-    users: []
+    users: {}
   }),
   created () {
     Tweet.list((list) => {
       this.tweets = list
     })
     User.list((list) => {
-      this.users = list
+      this.users = list.reduce((p, v) => {
+        p[v.$id] = v
+        return p
+      }, {})
     })
+  },
+  computed: {
+    list () {
+      const posts = this.tweets.map((tweet) => {
+        return {
+          ...tweet,
+          user: this.users[tweet.owner]
+        }
+      })
+      console.log(posts)
+      return posts
+    }
   },
   methods: {
     post () {
@@ -46,21 +76,13 @@ export default {
           this.input = ''
           this.posting = false
         })
-    },
-    findUserName (id) {
-      const x = this.users.find((it) => it.$id === id)
-      return x ? x.name : ''
-    },
-    findUserPhoto (id) {
-      const x = this.users.find((it) => it.$id === id)
-      return x ? x.photo : ''
     }
   }
 }
 </script>
 
-<style>
-  img.circular.image {
+<style scoped>
+  img.tiny.circular.image {
     width: 100px;
     height: 100px;
   }
