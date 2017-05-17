@@ -10,23 +10,14 @@
 <script>
 import { Me } from '../services'
 import ProfileDetail from './ProfileDetail'
-
+console.log(Me.get())
 export default {
   components: {
     ProfileDetail
   },
-  data: () => ({
-    profile: {
-      name: '',
-      description: ''
-    }
-  }),
-  created () {
-    Me.get()
-      .then((data) => {
-        this.profile = data
-      })
-  }
+  subscriptions: () => ({
+    profile: Me.get()
+  })
 }
 </script>
 

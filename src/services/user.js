@@ -1,12 +1,23 @@
 import firebase from 'firebase'
+import { Observable } from 'rxjs'
 
-const get = (id) => {
-  return firebase.database().ref(`user/${id}`)
-      .once('value')
-      .then((snapshot) => {
-        return snapshot.val()
-      })
-}
+// const get = (id) => {
+//   return firebase.database().ref(`user/${id}`)
+//       .once('value')
+//       .then((snapshot) => {
+//         return snapshot.val()
+//       })
+// }
+
+const get = (id) => Observable.create((o) => {
+  const ref = firebase.database().ref(`user/${id}`)
+  const fn = ref.on('value', (snapshot) => {
+    o.next(snapshot.val())
+  }, (err) => { o.error(err) })
+  return () => ref.off('value', fn)
+})
+
+const getOnce = (id) => get(id).first()
 
 const set = (id, data) => {
   return firebase.database().ref(`user/${id}`).set(data)
@@ -36,5 +47,6 @@ export default {
   get,
   set,
   subscribe,
-  list
+  list,
+  getOnce
 }

@@ -3,9 +3,9 @@ import Auth from './auth'
 
 const getId = () => Auth.getCurrentUser().uid
 
-const get = (cb) => {
-  return User.get(getId())
-}
+const get = () =>
+  Auth.currentUser()
+    .flatMap((user) => User.get(user.uid))
 
 const set = (data) => {
   return User.set(getId(), data)
