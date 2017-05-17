@@ -1,5 +1,5 @@
 <template>
-  <form class="ui form" @submit.prevent="save">
+  <form v-if="value" class="ui form" @submit.prevent="save">
     <div class="field">
       <label>Photo</label>
       <img v-if="photo" :src="photo" class="ui small circular image">
@@ -48,9 +48,11 @@ export default {
       this.$emit('save')
     },
     reload () {
-      this.name = this.value.name
-      this.description = this.value.description
-      this.photo = this.value.photo
+      if (this.value) {
+        this.name = this.value.name
+        this.description = this.value.description
+        this.photo = this.value.photo
+      }
     },
     openUpload () {
       this.$refs.upload.open()

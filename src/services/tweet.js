@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import Auth from './auth'
+import { Observable } from 'rxjs'
 
 const list = (cb) => {
   firebase.database().ref('tweet')
@@ -12,6 +13,18 @@ const list = (cb) => {
     })
 }
 
+const getTweets = () => Observable.create((o) => {
+  const ref = firebase.database().ref(`tweet`)
+  const fn = ref.on('value', (snapshots) => {
+    const result = []
+    snapshots.forEach((snapshot) => {
+      result.push(snapshot.val())
+    })
+    o.next(result)
+  }, (err) => { o.error(err) })
+  return () => ref.off('value', fn)
+})
+
 const post = (content) => {
   return firebase.database().ref('tweet').push({
     content,
@@ -22,5 +35,6 @@ const post = (content) => {
 
 export default {
   list,
-  post
+  post,
+  getTweets
 }

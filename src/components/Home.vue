@@ -8,7 +8,7 @@
         <button class="ui blue button" :class="{'loading disabled': posting}">Post</button>
       </form>
     </div>
-    <div v-for="tweet in list" class="ui segment">
+    <div v-if="tweets" v-for="tweet in list" class="ui segment">
       <div class="ui itemS">
         <div class="item">
           <div class="image">
@@ -36,35 +36,30 @@
 
 <script>
 import { Tweet, User } from '../services'
-
 export default {
   data: () => ({
     input: '',
-    posting: false,
-    tweets: [],
-    users: {}
+    posting: false
   }),
-  created () {
-    Tweet.list((list) => {
-      this.tweets = list
-    })
-    User.list((list) => {
-      this.users = list.reduce((p, v) => {
-        p[v.$id] = v
-        return p
-      }, {})
-    })
-  },
+  subscriptions: () => ({
+    tweets: Tweet.getTweets(),
+    users: User.getUsers()
+  }),
   computed: {
     list () {
-      const posts = this.tweets.map((tweet) => {
-        return {
-          ...tweet,
-          user: this.users[tweet.owner]
-        }
-      })
-      console.log(posts)
-      return posts
+      if (this.tweets && this.users) {
+        const posts = this.tweets.map((tweet) => {
+          const user = this.users.reduce((p, v) => {
+            p[v.$id] = v
+            return p
+          }, {})
+          return {
+            ...tweet,
+            user: user[tweet.owner]
+          }
+        })
+        return posts
+      }
     }
   },
   methods: {

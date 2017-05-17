@@ -17,6 +17,20 @@ const get = (id) => Observable.create((o) => {
   return () => ref.off('value', fn)
 })
 
+const getUsers = () => Observable.create((o) => {
+  const ref = firebase.database().ref(`user`)
+  const fn = ref.on('value', (snapshots) => {
+    const result = []
+    snapshots.forEach((snapshot) => {
+      const user = snapshot.val()
+      user.$id = snapshot.key
+      result.push(user)
+    })
+    o.next(result)
+  }, (err) => { o.error(err) })
+  return () => ref.off('value', fn)
+})
+
 const getOnce = (id) => get(id).first()
 
 const set = (id, data) => {
@@ -48,5 +62,6 @@ export default {
   set,
   subscribe,
   list,
-  getOnce
+  getOnce,
+  getUsers
 }

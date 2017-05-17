@@ -23,12 +23,9 @@ export default {
       description: ''
     }
   }),
-  created () {
-    Me.get()
-        .then((data) => {
-          this.profile = data
-        })
-  },
+  subscriptions: () => ({
+    profile: Me.get()
+  }),
   methods: {
     saveForm () {
       Me.set(this.profile)

@@ -10,7 +10,6 @@
 <script>
 import { Me } from '../services'
 import ProfileDetail from './ProfileDetail'
-console.log(Me.get())
 export default {
   components: {
     ProfileDetail
